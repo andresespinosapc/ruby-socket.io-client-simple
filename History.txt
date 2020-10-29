@@ -1,3 +1,7 @@
+=== 1.2.2 2020-10-29
+
+* fix ping to maintain connection
+
 === 1.2.1 2016-02-21
 
 * update websocket-client-simple v0.3.x
