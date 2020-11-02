@@ -51,7 +51,9 @@ module SocketIO
         def connect
           query = @opts.map{|k,v| URI.encode "#{k}=#{v}" }.join '&'
           begin
-            @websocket = WebSocket::Client::Simple.connect "#{@url}/socket.io/?#{query}"
+            @websocket = WebSocket::Client::Simple.connect URI.join(
+              @url, 'socket.io/', "?#{query}"
+            ).to_s
           rescue Errno::ECONNREFUSED => e
             @state = :disconnect
             @reconnecting = false
