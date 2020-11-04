@@ -14,7 +14,7 @@ module SocketIO
 
         attr_accessor :auto_reconnection, :websocket, :url, :reconnecting,
                       :state, :session_id, :ping_interval, :ping_timeout,
-                      :ping_state, :last_pong_at, :last_ping_at
+                      :ping_state, :last_pong_at, :last_ping_at, :thread
 
         def initialize(url, opts={})
           @url = url
@@ -24,7 +24,7 @@ module SocketIO
           @state = :disconnect
           @auto_reconnection = true
 
-          Thread.new do
+          @thread = Thread.new do
             loop do
               if @websocket
                 if @state == :connect
@@ -63,6 +63,10 @@ module SocketIO
           @reconnecting = false
 
           this = self
+
+          @websocket.on :close do
+            Thread.kill this.thread
+          end
 
           @websocket.on :error do |err|
             if err.kind_of? Errno::ECONNRESET and this.state == :connect
