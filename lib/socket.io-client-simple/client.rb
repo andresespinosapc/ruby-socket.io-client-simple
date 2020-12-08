@@ -35,9 +35,9 @@ module SocketIO
               if @websocket
                 if @state == :connect
                   if @ping_state == 'ready_to_ping' and Time.now.to_i - @last_pong_at > @ping_interval/1000
+                    @ping_state = 'waiting_pong'
                     @websocket.send "2"  ## ping
                     @last_ping_at = Time.now.to_i
-                    @ping_state = 'waiting_pong'
                     LOGGER.debug 'Ping sent'
                   end
                 end
